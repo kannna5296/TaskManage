@@ -12,14 +12,12 @@ using TaskManage.Data;
 namespace TaskManage.Controllers
 {
     public class HomeController : Controller
-    {
-        private readonly ILogger<HomeController> _logger;
-
+    { 
+        //TODO ログ埋め込む
         private readonly MyDatabaseContext _context;
 
-        public HomeController(ILogger<HomeController> logger, MyDatabaseContext context)
+        public HomeController(MyDatabaseContext context)
         {
-            _logger = logger;
             _context = context;
         }
 
@@ -28,15 +26,41 @@ namespace TaskManage.Controllers
             return View(_context.Todo.ToList());
         }
 
-        //public IActionResult Privacy()
-        //{
-        //    return View();
-        //}
+        public IActionResult Create()
+        {
+            return View();
+        }
 
-        //[ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        //public IActionResult Error()
-        //{
-        //    return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
-        //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Todo todo) 
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Add(todo);
+                    _context.SaveChanges();
+                }　catch (Exception ex )
+                {
+
+                }
+                return RedirectToAction(nameof(Index));
+            } else
+            {
+                return View(todo);
+            }
+        }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
     }
 }

@@ -97,6 +97,38 @@ namespace TaskManage.Controllers
             }
         }
 
+        public IActionResult Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var todo = _context.Todo.FirstOrDefault(m => m.ID == id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+
+            return View(todo);
+        }
+
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public IActionResult DeleteConfirm(int id)
+        {
+            var todo = _context.Todo.Find(id);
+            try
+            {
+                _context.Todo.Remove(todo);
+                _context.SaveChanges();
+            } catch (Exception ex)
+            {
+
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
         private bool TodoExists(int id)
         {
             return _context.Todo.Any(e => e.ID == id);

@@ -2,13 +2,26 @@
 @{
     ViewData["Title"] = "TaskManage";
 }
+<script>
+    function dragstart_handler(ev) {
+        // Add the target element's id to the data transfer object
+        ev.dataTransfer.setData("text/plain", ev.target.id);
+    }
 
+    window.addEventListener('DOMContentLoaded', () => {
+        // Get the element by id
+        const element = document.getElementById("p1");
+        // Add the ondragstart event listener
+        element.addEventListener("dragstart", dragstart_handler);
+    });
+</script>
 <h1>Tasks</h1>
 
 <p>
     <a asp-action="create">Create New</a>
 </p>
 
+<h3>Todo</h3>
 <table class="table">
     <thead>
         <tr>
@@ -24,22 +37,60 @@
         </tr>
     </thead>
     <tbody>
-        @foreach(var item in Model) {
+        @foreach (var item in Model)
+        {
+            <tr id="p1" draggable="true">
+                <td>
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
+                <th>
+                    @Html.DisplayFor(modelItem => item.name)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.deadline)
+                </th>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3>Doing</h3>
+<table class="table">
+    <thead>
         <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.ID)
-            </td>
             <th>
-                @Html.DisplayFor(modelItem => item.name)
+                ID
             </th>
             <th>
-                @Html.DisplayFor(modelItem => item.deadline)
+                やること
             </th>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
-                <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
-            </td>
+            <th>
+                期限
+            </th>
         </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ID)
+                </td>
+                <th>
+                    @Html.DisplayFor(modelItem => item.name)
+                </th>
+                <th>
+                    @Html.DisplayFor(modelItem => item.deadline)
+                </th>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+                    <a asp-action="Delete" asp-route-id="@item.ID">Delete</a>
+                </td>
+            </tr>
         }
     </tbody>
 </table>

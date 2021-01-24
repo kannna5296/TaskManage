@@ -52,6 +52,56 @@ namespace TaskManage.Controllers
             }
         }
 
+        public IActionResult Edit(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var todo = _context.Todo.Find(id);
+            if (todo == null)
+            {
+                return NotFound();
+            }
+            return View(todo);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Edit(int id, Todo todo)
+        {
+            if (id != todo.ID)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(todo);
+                    _context.SaveChanges();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!TodoExists(todo.ID))
+                    {
+                        return NotFound();
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            else
+            {
+                return View(todo);
+            }
+        }
+
+        private bool TodoExists(int id)
+        {
+            return _context.Todo.Any(e => e.ID == id);
+        }
+
         public IActionResult Privacy()
         {
             return View();

@@ -35,6 +35,9 @@
             <th>
                 @Html.DisplayFor(modelItem => item.deadline)
             </th>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.ID">Edit</a>
+            </td>
         </tr>
         }
     </tbody>
